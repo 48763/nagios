@@ -59,10 +59,24 @@ main() {
 
     echo "Host's system is $lsb_dist - $dist_version"
 
+    ## Download resource
+    cd /tmp
+
+    if [ -f nagioscore.tar.gz ]; then
+        wget --no-check-certificate -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.5.tar.gz
+        tar xzf nagioscore.tar.gz
+    fi
+
+    if [ -f nagios-plugins.tar.gz ]; then
+        wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz
+        tar zxf nagios-plugins.tar.gz
+    fi
+
     ## Deploy
     case "$lsb_dist" in
 
         ubuntu)
+
             $sh_c "apt-get update >/dev/null"
             $sh_c "apt-get install -y apt-utils autoconf gcc libc6 make wget unzip apache2 \
                 libmcrypt-dev libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext >/dev/null"
@@ -92,10 +106,6 @@ main() {
 
             esac
 
-            cd /tmp
-            wget --no-check-certificate -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.5.tar.gz
-            tar xzf nagioscore.tar.gz
-
             cd /tmp/nagioscore-nagios-4.4.5/
             $sh_c "./configure --with-httpd-conf=/etc/apache2/sites-enabled >/dev/null"
             $sh_c "make all >/dev/null"
@@ -113,10 +123,6 @@ main() {
             $sh_c "a2enmod cgi >/dev/null"
 
             $sh_c "htpasswd -cb /usr/local/nagios/etc/htpasswd.users nagiosadmin P@ssw0rd >/dev/null"
-
-            cd /tmp
-            wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz
-            tar zxf nagios-plugins.tar.gz
 
             cd /tmp/nagios-plugins-release-2.2.1/
             $sh_c "./tools/setup >/dev/null"
@@ -148,7 +154,7 @@ main() {
 
                 esac
             fi
-            
+
         ;;
 
         centos)
@@ -164,10 +170,6 @@ main() {
                     dnf update -y
                 ;;
             esac 
-
-            cd /tmp
-            wget -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.5.tar.gz
-            tar xzf nagioscore.tar.gz
 
             cd /tmp/nagioscore-nagios-4.4.5/
             ./configure
