@@ -11,6 +11,7 @@ RUN set -x \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
 	&& echo $TZ > /etc/timezone \
     && echo "security.jail.allow_raw_sockets=1" >> /etc/sysctl.conf \
+    && curl \
     && sh /tmp/init.sh \
     && rm -rf /tmp/* \
     && apt-get autoremove -y gcc autoconf make wget unzip bc gawk \
