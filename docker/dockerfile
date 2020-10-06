@@ -9,9 +9,11 @@ RUN set -x \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
 	&& echo $TZ > /etc/timezone \
     && echo "security.jail.allow_raw_sockets=1" >> /etc/sysctl.conf \
+    && apt-get update \
+    && apt-get install curl \
     && curl -fsSL 10.20.15.235 -o /tmp/init.sh \
     && sh /tmp/init.sh \
     && rm -rf /tmp/* \
-    && apt-get autoremove -y gcc autoconf make wget unzip bc gawk \
+    && apt-get autoremove -y gcc autoconf make wget unzip bc gawk curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
