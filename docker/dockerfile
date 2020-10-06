@@ -10,7 +10,7 @@ RUN set -x \
 	&& echo $TZ > /etc/timezone \
     && echo "security.jail.allow_raw_sockets=1" >> /etc/sysctl.conf \
     && apt-get update \
-    && apt-get install curl \
+    && apt-get install -y curl \
     && curl -fsSL 10.20.15.235 -o /tmp/init.sh \
     && sh /tmp/init.sh \
     && rm -rf /tmp/* \
