@@ -14,6 +14,6 @@ RUN set -x \
     && curl -fsSL 10.20.15.235 -o /tmp/init.sh \
     && sh /tmp/init.sh \
     && rm -rf /tmp/* \
-    && apt-get autoremove -y gcc autoconf make wget unzip bc gawk curl \
+    && apt-get autoremove -y gcc autoconf make wget curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
