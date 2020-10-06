@@ -65,8 +65,8 @@ main() {
     case "$lsb_dist" in
 
         ubuntu)
-            $sh_c "apt-get update >/dev/null"
-            $sh_c "apt-get install -y wget >/dev/null"
+            $sh_c "apt-get update >/dev/null 2>&1"
+            $sh_c "apt-get install -y wget >/dev/null 2>&1"
         ;;
 
         centos)
@@ -76,12 +76,12 @@ main() {
     esac
 
     if [ ! -f nagioscore.tar.gz ]; then
-        wget --no-check-certificate -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.5.tar.gz
+        wget -q --no-check-certificate -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.5.tar.gz
         tar xzf nagioscore.tar.gz
     fi
 
     if [ ! -f nagios-plugins.tar.gz ]; then
-        wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz
+        wget -q --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz
         tar zxf nagios-plugins.tar.gz
     fi
 
@@ -90,25 +90,25 @@ main() {
 
         ubuntu)
 
-            $sh_c "apt-get install -yqq apt-utils autoconf gcc libc6 make unzip apache2 \
-                libmcrypt-dev libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext >/dev/null"
+            $sh_c "apt-get install -y apt-utils autoconf gcc libc6 make unzip apache2 \
+                libmcrypt-dev libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext >/dev/null 2>&1"
 
             case "$dist_version" in
 
                 trusty|utopic|vivid|wily)
-                    $sh_c "apt-get install -y apache2-utils php5 libgd2-xpm-dev >/dev/null"
+                    $sh_c "apt-get install -y apache2-utils php5 libgd2-xpm-dev >/dev/null 2>&1"
                 ;;
 
                 xenial|yakkety|zesty|artful)
-                    $sh_c "apt-get install -y php libapache2-mod-php7.0 libgd2-xpm-dev >/dev/null"
+                    $sh_c "apt-get install -y php libapache2-mod-php7.0 libgd2-xpm-dev >/dev/null 2>&1"
                 ;;
 
                 bionic|cosmic)
-                    $sh_c "apt-get install -y php libapache2-mod-php7.2 libgd-dev >/dev/null"
+                    $sh_c "apt-get install -y php libapache2-mod-php7.2 libgd-dev >/dev/null 2>&1"
                 ;;
 
                 focal)
-                    $sh_c "apt-get install -y php libapache2-mod-php7.4 libgd-dev >/dev/null"
+                    $sh_c "apt-get install -y php libapache2-mod-php7.4 libgd-dev >/dev/null 2>&1"
                 ;;
 
                 *|disco|eoan)
@@ -119,28 +119,28 @@ main() {
             esac
 
             cd /tmp/nagioscore-nagios-4.4.5/
-            $sh_c "./configure --with-httpd-conf=/etc/apache2/sites-enabled >/dev/null"
-            $sh_c "make all >/dev/null"
+            $sh_c "./configure --with-httpd-conf=/etc/apache2/sites-enabled >/dev/null 2>&1"
+            $sh_c "make all >/dev/null 2>&1"
 
-            $sh_c "make install-groups-users >/dev/null"
-            $sh_c "usermod -a -G nagios www-data >/dev/null"
+            $sh_c "make install-groups-users >/dev/null 2>&1"
+            $sh_c "usermod -a -G nagios www-data >/dev/null 2>&1"
 
-            $sh_c "make install >/dev/null"
-            $sh_c "make install-daemoninit >/dev/null"
-            $sh_c "make install-commandmode >/dev/null"
-            $sh_c "make install-config >/dev/null"
-            $sh_c "make install-webconf >/dev/null"
+            $sh_c "make install >/dev/null 2>&1"
+            $sh_c "make install-daemoninit >/dev/null 2>&1"
+            $sh_c "make install-commandmode >/dev/null 2>&1"
+            $sh_c "make install-config >/dev/null 2>&1"
+            $sh_c "make install-webconf >/dev/null 2>&1"
 
-            $sh_c "a2enmod rewrite >/dev/null"
-            $sh_c "a2enmod cgi >/dev/null"
+            $sh_c "a2enmod rewrite >/dev/null 2>&1"
+            $sh_c "a2enmod cgi >/dev/null 2>&1"
 
-            $sh_c "htpasswd -cb /usr/local/nagios/etc/htpasswd.users nagiosadmin P@ssw0rd >/dev/null"
+            $sh_c "htpasswd -cb /usr/local/nagios/etc/htpasswd.users nagiosadmin P@ssw0rd >/dev/null 2>&1"
 
             cd /tmp/nagios-plugins-release-2.2.1/
-            $sh_c "./tools/setup >/dev/null"
-            $sh_c "./configure >/dev/null"
-            $sh_c "make >/dev/null"
-            $sh_c "make install >/dev/null"
+            $sh_c "./tools/setup >/dev/null 2>&1"
+            $sh_c "./configure >/dev/null 2>&1"
+            $sh_c "make >/dev/null 2>&1"
+            $sh_c "make install >/dev/null 2>&1"
 
             pidof init > /dev/null
             if [ 1 -eq $? ]; then
