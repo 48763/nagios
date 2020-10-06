@@ -4,10 +4,11 @@
 FROM ubuntu:focal 
 
 ENV TZ=Asia/Taipei
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN set -x \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
-	&& echo $TZ > /etc/timezone \
+    && echo $TZ > /etc/timezone \
     && echo "security.jail.allow_raw_sockets=1" >> /etc/sysctl.conf \
     && apt-get update \
     && apt-get install -y curl \
