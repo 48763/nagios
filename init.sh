@@ -58,15 +58,14 @@ main() {
     esac
 
     echo "Host's system is $lsb_dist - $dist_version"
-
-    ## Download resource
     cd /tmp
 
+    ## Download resource
     case "$lsb_dist" in
 
         ubuntu)
-            $sh_c "apt-get update >/dev/null 2>&1"
-            $sh_c "apt-get install -y wget >/dev/null 2>&1"
+            $sh_c "apt-get update >/dev/null"
+            $sh_c "apt-get install -y wget >/dev/null"
         ;;
 
         centos)
@@ -91,24 +90,24 @@ main() {
         ubuntu)
 
             $sh_c "apt-get install -y apt-utils autoconf gcc libc6 make unzip apache2 \
-                libmcrypt-dev libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext >/dev/null 2>&1"
+                libmcrypt-dev libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext >/dev/null"
 
             case "$dist_version" in
 
                 trusty|utopic|vivid|wily)
-                    $sh_c "apt-get install -y apache2-utils php5 libgd2-xpm-dev >/dev/null 2>&1"
+                    $sh_c "apt-get install -y php5 apache2-utils libgd2-xpm-dev >/dev/null"
                 ;;
 
                 xenial|yakkety|zesty|artful)
-                    $sh_c "apt-get install -y php libapache2-mod-php7.0 libgd2-xpm-dev >/dev/null 2>&1"
+                    $sh_c "apt-get install -y php libapache2-mod-php7.0 libgd2-xpm-dev >/dev/null"
                 ;;
 
                 bionic|cosmic)
-                    $sh_c "apt-get install -y php libapache2-mod-php7.2 libgd-dev >/dev/null 2>&1"
+                    $sh_c "apt-get install -y php libapache2-mod-php7.2 libgd-dev >/dev/null"
                 ;;
 
                 focal)
-                    $sh_c "apt-get install -y php libapache2-mod-php7.4 libgd-dev >/dev/null 2>&1"
+                    $sh_c "apt-get install -y php libapache2-mod-php7.4 libgd-dev >/dev/null"
                 ;;
 
                 *|disco|eoan)
@@ -119,28 +118,28 @@ main() {
             esac
 
             cd /tmp/nagioscore-nagios-4.4.5/
-            $sh_c "./configure --with-httpd-conf=/etc/apache2/sites-enabled >/dev/null 2>&1"
-            $sh_c "make all >/dev/null 2>&1"
+            $sh_c "./configure --with-httpd-conf=/etc/apache2/sites-enabled >/dev/null"
+            $sh_c "make all >/dev/null"
 
-            $sh_c "make install-groups-users >/dev/null 2>&1"
-            $sh_c "usermod -a -G nagios www-data >/dev/null 2>&1"
+            $sh_c "make install-groups-users >/dev/null"
+            $sh_c "usermod -a -G nagios www-data >/dev/null"
 
-            $sh_c "make install >/dev/null 2>&1"
-            $sh_c "make install-daemoninit >/dev/null 2>&1"
-            $sh_c "make install-commandmode >/dev/null 2>&1"
-            $sh_c "make install-config >/dev/null 2>&1"
-            $sh_c "make install-webconf >/dev/null 2>&1"
+            $sh_c "make install >/dev/null"
+            $sh_c "make install-daemoninit >/dev/null"
+            $sh_c "make install-commandmode >/dev/null"
+            $sh_c "make install-config >/dev/null"
+            $sh_c "make install-webconf >/dev/null"
 
-            $sh_c "a2enmod rewrite >/dev/null 2>&1"
-            $sh_c "a2enmod cgi >/dev/null 2>&1"
+            $sh_c "a2enmod rewrite >/dev/null"
+            $sh_c "a2enmod cgi >/dev/null"
 
-            $sh_c "htpasswd -cb /usr/local/nagios/etc/htpasswd.users nagiosadmin P@ssw0rd >/dev/null 2>&1"
+            $sh_c "htpasswd -cb /usr/local/nagios/etc/htpasswd.users nagiosadmin P@ssw0rd >/dev/null"
 
             cd /tmp/nagios-plugins-release-2.2.1/
-            $sh_c "./tools/setup >/dev/null 2>&1"
-            $sh_c "./configure >/dev/null 2>&1"
-            $sh_c "make >/dev/null 2>&1"
-            $sh_c "make install >/dev/null 2>&1"
+            $sh_c "./tools/setup >/dev/null"
+            $sh_c "./configure >/dev/null"
+            $sh_c "make >/dev/null"
+            $sh_c "make install >/dev/null"
 
             pidof init > /dev/null
             if [ 1 -eq $? ]; then
