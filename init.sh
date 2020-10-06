@@ -62,12 +62,25 @@ main() {
     ## Download resource
     cd /tmp
 
-    if [ -f nagioscore.tar.gz ]; then
+    case "$lsb_dist" in
+
+        ubuntu)
+            $sh_c "apt-get update >/dev/null"
+            $sh_c "apt-get install -y wget >/dev/null"
+        ;;
+
+        centos)
+            yum install -y wget
+        ;;
+
+    esac
+
+    if [ ! -f nagioscore.tar.gz ]; then
         wget --no-check-certificate -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.5.tar.gz
         tar xzf nagioscore.tar.gz
     fi
 
-    if [ -f nagios-plugins.tar.gz ]; then
+    if [ ! -f nagios-plugins.tar.gz ]; then
         wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.2.1.tar.gz
         tar zxf nagios-plugins.tar.gz
     fi
@@ -77,8 +90,7 @@ main() {
 
         ubuntu)
 
-            $sh_c "apt-get update >/dev/null"
-            $sh_c "apt-get install -y apt-utils autoconf gcc libc6 make wget unzip apache2 \
+            $sh_c "apt-get install -yqq apt-utils autoconf gcc libc6 make unzip apache2 \
                 libmcrypt-dev libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext >/dev/null"
 
             case "$dist_version" in
@@ -162,11 +174,11 @@ main() {
             case "$dist_version" in
 
                 5|6|7)
-                    yum install -y gcc glibc glibc-common wget unzip httpd php gd gd-devel perl postfix
+                    yum install -y gcc glibc glibc-common unzip httpd php gd gd-devel perl postfix
                 ;;
 
                 8)
-                    dnf install -y gcc glibc glibc-common perl httpd php wget gd gd-devel
+                    dnf install -y gcc glibc glibc-common perl httpd php gd gd-devel
                     dnf update -y
                 ;;
             esac 
@@ -217,7 +229,7 @@ main() {
             case "$dist_version" in
 
                 5)
-                    yum install -y gcc glibc glibc-common make gettext automake wget openssl-devel net-snmp net-snmp-utils epel-release
+                    yum install -y gcc glibc glibc-common make gettext automake openssl-devel net-snmp net-snmp-utils epel-release
                     yum install -y perl-Net-SNMP
                     cd /tmp
                     wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.60.tar.gz
@@ -229,12 +241,12 @@ main() {
                 ;;
 
                 6|7)
-                    yum install -y gcc glibc glibc-common make gettext automake autoconf wget openssl-devel net-snmp net-snmp-utils epel-release
+                    yum install -y gcc glibc glibc-common make gettext automake autoconf openssl-devel net-snmp net-snmp-utils epel-release
                     yum install -y perl-Net-SNMP
                 ;;
 
                 8)
-                    yum install -y gcc glibc glibc-common make gettext automake autoconf wget openssl-devel net-snmp net-snmp-utils epel-release
+                    yum install -y gcc glibc glibc-common make gettext automake autoconf openssl-devel net-snmp net-snmp-utils epel-release
                     yum --enablerepo=PowerTools,epel install perl-Net-SNMP
                 ;;
 
