@@ -89,8 +89,9 @@ main() {
 
         ubuntu)
 
-            $sh_c "apt-get install -y apt-utils iputils-ping autoconf gcc libc6 make unzip apache2 \
-                libmcrypt-dev libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext >/dev/null"
+            $sh_c "apt-get install -y gcc libc6 libmcrypt-dev libssl-dev gettext \
+                make autoconf build-essential gawk unzip bc dc iputils-ping \
+                apache2 snmp libnet-snmp-perl >/dev/null"
 
             case "$dist_version" in
 
