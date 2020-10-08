@@ -22,5 +22,5 @@ WORKDIR /usr/local/nagios
 
 COPY entrypoint.sh ./bin
 
-ENTRYPOINT ["sh", "entrypoint.sh"]
+ENTRYPOINT ["sh", "bin/entrypoint.sh"]
 CMD ["etc/nagios.cfg"]
