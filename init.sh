@@ -6,6 +6,8 @@ get_distribution() {
     # Every system that we officially support has /etc/os-release
     if [ -r /etc/os-release ]; then
         lsb_dist="$(. /etc/os-release && echo "$ID")"
+    elif [ -r /etc/centos-release ]; then
+        lsb_dist="centos"
     fi
     # Returning an empty string here should be alright since the
     # case statements don't act unless you provide an actual value
@@ -44,14 +46,17 @@ main() {
             if command_exists lsb_release; then
                 dist_version="$(lsb_release --codename | cut -f2)"
             fi
+
             if [ -z "$dist_version" ] && [ -r /etc/lsb-release ]; then
                 dist_version="$(. /etc/lsb-release && echo "$DISTRIB_CODENAME")"
             fi
         ;;
 
         centos)
-            if [ -z "$dist_version" ] && [ -r /etc/os-release ]; then
+            if [ -r /etc/os-release ]; then
                 dist_version="$(. /etc/os-release && echo "$VERSION_ID")"
+            elif [ -r /etc/centos-release ]; then
+                dist_version="$(cat /etc/centos-release | cut -d ' ' -f 3 | cut -d '.' -f 1)"
             fi
         ;;
 
@@ -69,7 +74,19 @@ main() {
         ;;
 
         centos)
-            yum install -y wget
+
+            case "$dist_version" in
+
+            5|6|7)
+                yum install -y wget
+            ;;
+
+            8)
+                dnf install -y wget
+            ;;
+
+            esac
+
         ;;
 
     esac
@@ -210,30 +227,17 @@ main() {
             make install-config
             make install-webconf
 
-            htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
-
-            case "$dist_version" in
-
-                5|6)
-                    service httpd start
-                    service nagios start
-                ;;
-
-                7|8)
-                    systemctl start httpd.service
-                    systemctl start nagios.service
-                ;;
-
-            esac
+            htpasswd -cb /usr/local/nagios/etc/htpasswd.users nagiosadmin P@ssw0rd
 
             case "$dist_version" in
 
                 5)
-                    yum install -y gcc glibc glibc-common make gettext automake openssl-devel net-snmp net-snmp-utils epel-release
-                    yum install -y perl-Net-SNMP
+                    yum install -y gcc glibc glibc-common make gettext automake openssl-devel net-snmp net-snmp-utils epel-release perl-Net-SNMP
+
                     cd /tmp
                     wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.60.tar.gz
                     tar xzf autoconf-2.60.tar.gz 
+                    
                     cd /tmp/autoconf-2.60
                     ./configure 
                     make
@@ -241,8 +245,7 @@ main() {
                 ;;
 
                 6|7)
-                    yum install -y gcc glibc glibc-common make gettext automake autoconf openssl-devel net-snmp net-snmp-utils epel-release
-                    yum install -y perl-Net-SNMP
+                    yum install -y gcc glibc glibc-common make gettext automake autoconf openssl-devel net-snmp net-snmp-utils epel-release perl-Net-SNMP
                 ;;
 
                 8)
@@ -250,22 +253,18 @@ main() {
                     yum --enablerepo=PowerTools,epel install perl-Net-SNMP
                 ;;
 
-            esac 
+            esac
 
             case "$dist_version" in
 
                 5|6)
                     service nagios start
-                    service nagios stop
-                    service nagios restart
-                    service nagios status
+                    service httpd start
                 ;;
 
                 7|8)
                     systemctl start nagios.service
-                    systemctl stop nagios.service
-                    systemctl restart nagios.service
-                    systemctl status nagios.service
+                    systemctl start httpd.service
                 ;;
 
             esac
