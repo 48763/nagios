@@ -3,7 +3,10 @@ set -x
 REGION=""
 PROJECT=""
 ENV=""
+MEMBER=""
 HOST=""
+CFG_PATH=""
+mode=0
 
 mark() {
     echo $1 | grep -Po "^[[:punct:]]* "
@@ -17,48 +20,97 @@ mark() {
 
 ### 
 configure_host() {
-    echo 0
+
+    if [ "${PROJECT}" = "${HOST}" ]; then
+        HOST="${ENV}-${HOST}"
+    else
+        HOST="${PROJECT}-${ENV}-${HOST}"
+    fi
+
+    set_config "define host {"
+    set_config "    use                     linux-server"
+    set_config "    host_name               ${HOST}"
+    set_config "    address                 127.0.0.1"
+    set_config "}"
+    set_config ""
+
+    MEMBER="${MEMBER}${HOST},"
 }
 
 ###
 configure_hostg() {
-    echo 0
+
+    set_config "define hostgroup {"
+    set_config "    hostgroup_name          ${PROJECT}"
+    set_config "    members                 ${MEMBER}"
+    set_config "}"
+    set_config ""
 }
 
 ###
 configure_svcg() {
-    echo 0
+
+    set_config "define servicegroup {"
+    set_config "    servicegroup_name ${PROJECT}-${ENV}"
+    set_config "}"
+    set_config ""
 }
 
 #-
 configure_svc() {
-    echo 0
+
+    set_config "define service {"
+    set_config "    use https_check"
+    set_config "    host_name ${HOST}"
+    set_config "    service_description ${HOST} ${1}"
+    set_config "    check_command ${1}"
+    set_config "    servicegroups ${PROJECT}-${ENV}"
+    set_config "}"
+    set_config ""
+}
+
+set_config() {
+    echo "$1" >> $CFG_PATH
 }
 
 while read output
 do
-    echo $output
+
     punct="${output% *}"
 
     if [ "-" = "${punct}" ]; then
 
         if [ 1 -ne $mode ]; then
             mode=1
-            #set -> config
+            
+            CFG_PATH="host.cfg"
+            configure_host
+
+            CFG_PATH="svc/${PROJECT}-${ENV}.cfg"
+
             echo "${REGION}"
             echo "${PROJECT}-${ENV}, ${HOST}"
         fi
-        
-        #set -> svc
-        echo "${output#* }"
+
+        configure_svc ${output#* }
 
     elif [ "####" = "${punct}" ]; then
         HOST=${output#* }
-        mode=0
     elif [ "###" = "${punct}" ]; then
         ENV=${output#* }
+        CFG_PATH="svcgp.cfg"
+        configure_svcg
+    elif [ 0 -ne $mode ]; then
         mode=0
     elif [ "##" = "${punct}" ]; then
+        
+        if [ "" != "${MEMBER}" ]; then
+            MEMBER="${MEMBER%,}"
+            CFG_PATH="host.cfg"
+            configure_hostg
+            MEMBER=""
+        fi
+        
         PROJECT=${output#* }
         HOST=${output#* }
     elif [ "#" = "${punct}" ]; then
