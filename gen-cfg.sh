@@ -19,7 +19,7 @@ write_config() {
 }
 
 check_config() {
-    cat ${CFG_PATH} > 2>&1| grep "${1}" > /dev/null 2>&1
+    cat ${CFG_PATH} 2>&1 | grep "${1}" > /dev/null 2>&1
     echo $?
 }
 
