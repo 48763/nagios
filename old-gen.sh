@@ -17,7 +17,7 @@ mode=0
 ignore=0
 
 set_config() {
-    echo "$1" >> ${NAGIOS_PATH}${CFG_PATH}
+    echo "$1" >> ${NAGIOS_PATH}/${CFG_PATH}
 }
 
 configure_host() {
@@ -75,7 +75,7 @@ do
 
     if [ "#" = "${punct}" ]; then
         REGION=${output#* }
-        echo ${NEEDREGION} | grep ${REGION}
+        echo ${NEEDREGION} | grep ${REGION} > /dev/null
         ignore=${?}
     elif [ 0 -eq ${ignore} ]; then
 
