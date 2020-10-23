@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+. ./conf
 # jp, tw, cn, etc.
 REGION=""
 # project
@@ -14,9 +14,10 @@ MEMBER=""
 CFG_PATH=""
 # write mode, 1 mean enable.
 mode=0
+ignore=0
 
 set_config() {
-    echo "$1" >> $CFG_PATH
+    echo "$1" >> ${NAGIOS_PATH}${CFG_PATH}
 }
 
 configure_host() {
@@ -72,41 +73,45 @@ do
 
     punct="${output% *}"
 
-    if [ "-" = "${punct}" ]; then
-
-        if [ 1 -ne $mode ]; then
-            mode=1
-            
-            CFG_PATH="host.cfg"
-            configure_host
-
-            CFG_PATH="svc/${PROJECT}-${ENV}.cfg"
-        fi
-
-        configure_svc ${output#* }
-
-    elif [ "####" = "${punct}" ]; then
-        HOST=${output#* }
-    elif [ "###" = "${punct}" ]; then
-        ENV=${output#* }
-        CFG_PATH="svcgp.cfg"
-        configure_svcg
-    elif [ 0 -ne $mode ]; then
-        # disable witer mode.
-        mode=0
-    elif [ "##" = "${punct}" ]; then
-        # member not null write hostgroup, when change project
-        if [ "" != "${MEMBER}" ]; then
-            MEMBER="${MEMBER%,}"
-            CFG_PATH="host.cfg"
-            configure_hostg
-            MEMBER=""
-        fi
-        
-        PROJECT=${output#* }
-        HOST=${output#* }
-    elif [ "#" = "${punct}" ]; then
+    if [ "#" = "${punct}" ]; then
         REGION=${output#* }
+        echo ${NEEDREGION} | grep ${REGION}
+        ignore=${?}
+    elif [ 0 -eq ${ignore} ]; then
+
+        if [ "-" = "${punct}" ]; then
+
+            if [ 1 -ne $mode ]; then
+                mode=1
+                
+                CFG_PATH="host.cfg"
+                configure_host
+
+                CFG_PATH="svc/${PROJECT}-${ENV}.cfg"
+            fi
+
+            configure_svc ${output#* }
+
+        elif [ "####" = "${punct}" ]; then
+            HOST=${output#* }
+        elif [ "###" = "${punct}" ]; then
+            ENV=${output#* }
+            CFG_PATH="svcgp.cfg"
+            configure_svcg
+        elif [ 0 -ne $mode ]; then
+            # disable witer mode.
+            mode=0
+        elif [ "##" = "${punct}" ]; then
+            # member not null write hostgroup, when change project
+            if [ "" != "${MEMBER}" ]; then
+                MEMBER="${MEMBER%,}"
+                CFG_PATH="host.cfg"
+                configure_hostg
+                MEMBER=""
+            fi
+            
+            PROJECT=${output#* }
+            HOST=${output#* }
     fi
 
 done < <(cat url.md)
