@@ -1,26 +1,27 @@
 #!/bin/bash
 set -x
+# jp, tw, cn, etc.
 REGION=""
+# project
 PROJECT=""
+# prod, sit, dev
 ENV=""
-MEMBER=""
+# subproject
 HOST=""
+# host group
+MEMBER=""
+# config path
 CFG_PATH=""
+# write mode, 1 mean enable.
 mode=0
 
-mark() {
-    echo $1 | grep -Po "^[[:punct:]]* "
+set_config() {
+    echo "$1" >> $CFG_PATH
 }
 
-    # file
-    ## project=host
-    ### env
-    #### host or project
-    #- list -> ping
-
-### 
 configure_host() {
-
+    
+    # some project not exist subproject.
     if [ "${PROJECT}" = "${HOST}" ]; then
         HOST="${ENV}-${HOST}"
     else
@@ -37,7 +38,6 @@ configure_host() {
     MEMBER="${MEMBER}${HOST},"
 }
 
-###
 configure_hostg() {
 
     set_config "define hostgroup {"
@@ -47,7 +47,6 @@ configure_hostg() {
     set_config ""
 }
 
-###
 configure_svcg() {
 
     set_config "define servicegroup {"
@@ -56,7 +55,6 @@ configure_svcg() {
     set_config ""
 }
 
-#-
 configure_svc() {
 
     set_config "define service {"
@@ -67,10 +65,6 @@ configure_svc() {
     set_config "    servicegroups ${PROJECT}-${ENV}"
     set_config "}"
     set_config ""
-}
-
-set_config() {
-    echo "$1" >> $CFG_PATH
 }
 
 while read output
@@ -87,9 +81,6 @@ do
             configure_host
 
             CFG_PATH="svc/${PROJECT}-${ENV}.cfg"
-
-            echo "${REGION}"
-            echo "${PROJECT}-${ENV}, ${HOST}"
         fi
 
         configure_svc ${output#* }
@@ -101,9 +92,10 @@ do
         CFG_PATH="svcgp.cfg"
         configure_svcg
     elif [ 0 -ne $mode ]; then
+        # disable witer mode.
         mode=0
     elif [ "##" = "${punct}" ]; then
-        
+        # member not null write hostgroup, when change project
         if [ "" != "${MEMBER}" ]; then
             MEMBER="${MEMBER%,}"
             CFG_PATH="host.cfg"
