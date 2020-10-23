@@ -112,6 +112,7 @@ do
             
             PROJECT=${output#* }
             HOST=${output#* }
+        fi
     fi
 
 done < <(cat url.md)
