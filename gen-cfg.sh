@@ -76,12 +76,15 @@ configure_hostg() {
 
 configure_svc() {
     # enhanced 
+    host=${HOST%%/*}
+    path=${HOST#*/}
+    
     if [ 0 -ne $(check_config "${HOST} ${1}$") ]; then
         write_config "define service {"
         write_config "    use https_check"
         write_config "    host_name ${HOST}"
         write_config "    service_description ${HOST} ${1}"
-        write_config "    check_command ${1}"
+        write_config "    check_command https_check ${1}!-H ${host} -u ${path}"
         write_config "    servicegroups ${PROJECT}-${ENV}"
         write_config "}"
         write_config ""
