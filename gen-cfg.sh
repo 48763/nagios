@@ -59,7 +59,7 @@ configure_hostg() {
     else
         line=$(( 1 + $(grep -n " ${PROJECT}$" ${CFG_PATH} | cut -d : -f1) ))
         
-        MEMBERS="${MEMBERS},$(sed -n ${line}p host.cfg | awk '{print $2}')"
+        MEMBERS="${MEMBERS},$(sed -n ${line}p ${CFG_PATH} | awk '{print $2}')"
         MEMBERS="$(echo ${MEMBERS} | sed 's/,/ /g')"
 
         NEW_MEMBERS=""
