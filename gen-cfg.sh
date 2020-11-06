@@ -145,4 +145,4 @@ do
         fi
     fi
 
-done < <(cat url.md)
+done < <(cat url.md && echo)
