@@ -78,6 +78,10 @@ configure_svc() {
     # enhanced 
     host=${1%%/*}
     path=${1#*/}
+
+    if [[ ${host} = ${path} ]]; then
+          path="/"
+    fi
     
     if [ 0 -ne $(check_config "${HOST} ${1}$") ]; then
         write_config "define service {"
@@ -85,6 +89,15 @@ configure_svc() {
         write_config "    host_name ${HOST}"
         write_config "    service_description ${HOST} ${1}"
         write_config "    check_command https_check!-H ${host} -u ${path}"
+        write_config "    servicegroups ${PROJECT}-${ENV}"
+        write_config "}"
+        write_config ""
+        
+        write_config "define service {"
+        write_config "    use SSL_check"
+        write_config "    host_name ${HOST}"
+        write_config "    service_description SSL ${HOST} ${1}"
+        write_config "    check_command ssl_check!-H ${host}"
         write_config "    servicegroups ${PROJECT}-${ENV}"
         write_config "}"
         write_config ""
