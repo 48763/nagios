@@ -1,2 +1,2 @@
-NAGIOS_PATH="./"
-NEEDREGION="earth,mars"
+NAGIOS_PATH="./project/"
+NEEDREGION="region-a,region-b"
