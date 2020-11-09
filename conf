@@ -1,2 +1,2 @@
-NAGIOS_PATH="./project/"
+NAGIOS_PATH="./project"
 NEEDREGION="region-a,region-b"

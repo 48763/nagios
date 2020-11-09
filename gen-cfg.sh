@@ -11,7 +11,7 @@ CFG_PATH=""
 mode=0
 
 set_cfg() {
-    CFG_PATH="${NAGIOS_PATH}${1}"
+    CFG_PATH="${NAGIOS_PATH}/${1}"
 }
 
 write_config() {
@@ -113,6 +113,15 @@ configure_svcg() {
         write_config ""
     fi
 }
+
+if [ ! -d ${NAGIOS_PATH} ]; then
+    echo No find directory.
+    exit 1
+fi
+
+if [ ! -d ${NAGIOS_PATH}/svc ]; then
+    mkdir ${NAGIOS_PATH}/svc
+fi
 
 while read output
 do
