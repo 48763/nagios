@@ -1,8 +1,9 @@
 #/bin/bash
 
-if [ -n $(docker images -f "reference=nagios:latest" -q) ]; then
-    
-    if [ ! $(nc -z -w 3 localhost 80) ]; then
+if [ -z $(docker images -f "reference=nagios:latest" -q) ]; then
+
+    nc -z -w 3 localhost 80
+    if [ 0 -ne $? ]; then
 
         docker run --name nginx-nagios \
             -v $(pwd)/web-80.conf:/etc/nginx/conf.d/web-80.conf \
@@ -18,12 +19,13 @@ if [ -n $(docker images -f "reference=nagios:latest" -q) ]; then
     docker rm -f nginx-nagios
 fi
 
-if [ -n $(docker ps -f "name=nagios" -q) ]; then
+if [ -z $(docker ps -f "name=nagios" -q) ]; then
 
-    if [ ! $(nc -z -w 3 localhost 80) ]; then
+    nc -z -w 3 localhost 80
+    if [ 0 -ne $? ]; then
 
         docker run --name nagios \
-            -v $(pwd)/../project/:/usr/local/nagios/etc/project
+            -v $(pwd)/../project/:/usr/local/nagios/etc/project \
             -p 80:80 \
             -d nagios
     else
