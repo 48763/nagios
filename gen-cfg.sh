@@ -94,7 +94,7 @@ configure_svc() {
         write_config ""
         
         write_config "define service {"
-        write_config "    use SSL_check"
+        write_config "    use ssl_check"
         write_config "    host_name ${HOST}"
         write_config "    service_description SSL ${HOST} ${1}"
         write_config "    check_command ssl_check!-H ${host}"
