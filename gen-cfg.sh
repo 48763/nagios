@@ -5,6 +5,7 @@ REGION=""
 ignore=0
 PROJECT=""
 ENV=""
+ITEM=""
 HOST=""
 MEMBERS=""
 CFG_PATH=""
@@ -31,10 +32,10 @@ set_ignore() {
 configure_host() {
     
     # some project not exist subproject.
-    if [ "${PROJECT}" = "${HOST}" ]; then
-        HOST="${ENV}-${HOST}"
+    if [ "${PROJECT}" = "${ITEM}" ]; then
+        HOST="${ENV}-${ITEM}"
     else
-        HOST="${PROJECT}-${ENV}-${HOST}"
+        HOST="${PROJECT}-${ENV}-${ITEM}"
     fi
 
     if [ 0 -ne $(check_config "${HOST}$") ]; then
@@ -146,7 +147,7 @@ do
             configure_svc ${output#* }
 
         elif [ "####" = "${punct}" ]; then
-            HOST=${output#* }
+            ITEM=${output#* }
         elif [ "###" = "${punct}" ]; then
             ENV=${output#* }
             set_cfg "svcgp.cfg"
@@ -163,7 +164,7 @@ do
             fi
 
             PROJECT=${output#* }
-            HOST=${output#* }
+            ITEM=${output#* }
         fi
     fi
 
