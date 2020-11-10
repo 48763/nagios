@@ -32,20 +32,20 @@ configure_host() {
     
     # some project not exist subproject.
     if [ "${PROJECT}" = "${HOST}" ]; then
-        host="${ENV}-${HOST}"
+        HOST="${ENV}-${HOST}"
     else
-        host="${PROJECT}-${ENV}-${HOST}"
+        HOST="${PROJECT}-${ENV}-${HOST}"
     fi
 
-    if [ 0 -ne $(check_config "${host}$") ]; then
+    if [ 0 -ne $(check_config "${HOST}$") ]; then
         write_config "define host {"
         write_config "    use                     linux-server"
-        write_config "    host_name               ${host}"
+        write_config "    host_name               ${HOST}"
         write_config "    address                 127.0.0.1"
         write_config "}"
         write_config ""
     fi
-    MEMBERS="${MEMBERS}${host},"
+    MEMBERS="${MEMBERS}${HOST},"
 }
 
 configure_hostg() {
@@ -76,10 +76,10 @@ configure_hostg() {
 
 configure_svc() {
     # enhanced 
-    host=${1%%/*}
+    url=${1%%/*}
     path=${1#*/}
 
-    if [[ ${host} = ${path} ]]; then
+    if [[ ${url} = ${path} ]]; then
           path="/"
     fi
     
@@ -87,8 +87,8 @@ configure_svc() {
         write_config "define service {"
         write_config "    use https_check"
         write_config "    host_name ${HOST}"
-        write_config "    service_description ${HOST} ${1}"
-        write_config "    check_command https_check!-H ${host} -u ${path}"
+        write_config "    service_description HTTP ${HOST} ${1}"
+        write_config "    check_command https_check!-H ${url} -u ${path}"
         write_config "    servicegroups ${PROJECT}-${ENV}"
         write_config "}"
         write_config ""
@@ -97,7 +97,7 @@ configure_svc() {
         write_config "    use ssl_check"
         write_config "    host_name ${HOST}"
         write_config "    service_description SSL ${HOST} ${1}"
-        write_config "    check_command ssl_check!-H ${host}"
+        write_config "    check_command ssl_check!-H ${url}"
         write_config "    servicegroups ${PROJECT}-${ENV}"
         write_config "}"
         write_config ""
