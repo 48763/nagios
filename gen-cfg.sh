@@ -81,15 +81,15 @@ configure_svc() {
     path=${1#*/}
 
     if [[ ${url} = ${path} ]]; then
-          path="/"
+          path=""
     fi
     
     if [ 0 -ne $(check_config "${HOST} ${1}$") ]; then
         write_config "define service {"
         write_config "    use https_check"
         write_config "    host_name ${HOST}"
-        write_config "    service_description HTTP ${HOST} ${1}"
-        write_config "    check_command check_https!-H ${url} -u ${path}"
+        write_config "    service_description HTTPS ${HOST} ${1}"
+        write_config "    check_command check_https!-H ${url} -u /${path}"
         write_config "    servicegroups ${PROJECT}-${ENV}"
         write_config "}"
         write_config ""
