@@ -18,25 +18,7 @@ $ cd nagios
 
 ### 本機
 
-#### 腳本支援系統
-
-| 系統 | 版本 |
-| - | - |
-| Ubuntu | trusty |
-| | utopic |
-| | vivid |
-| | wily |
-| | xenial |
-| | yakkety |
-| | zesty |
-| | artful |
-| | bionic |
-| | cosmic |
-| | focal |
-| CentOS | 5 |
-| | 6 |
-| | 7 |
-| | 8 |
+**腳本支援系統**
 
 - Ubuntu
     - trusty
@@ -65,6 +47,45 @@ $ ./init.sh
 ```
 $ cd docker
 $ ./run.sh
+```
+
+## 配置
+
+### `url.md` 格式
+
+```
+# 區域a
+
+## 專案a
+
+### 環境
+
+#### 子專案
+
+# 區域b
+
+## 專案a
+
+### 環境
+
+#### 子專案
+
+## nothing-to-do
+```
+
+### 路徑與區域配置
+
+```
+$ cp -r project /usr/local/nagios/etc/
+$ vi conf
+NAGIOS_PATH="./project"
+NEEDREGION="region-a,region-b"
+```
+
+### 生成配置
+
+```
+$ ./gen-cfg
 ```
 
 ## 參考
