@@ -1,6 +1,6 @@
 # nagios
  
-Nagios 是電腦系統和網絡監控程序，用於檢測主機和服務，當異常發生和解除時能提醒用戶；是基於GPLv2開發的開源軟體，可免費獲得及使用。[1]
+Nagios 是電腦系統和網絡監控程序，用於檢測主機和服務，當異常發生和解除時能提醒用戶；是基於GPLv2開發的開源軟體，可免費獲得及使用。[[1]](#參考)
 
 ## 簡介
 
@@ -74,7 +74,7 @@ $ ./run.sh
 
 ### `url.md` 格式
 
-按照下面配置 `url.md`（已寫好範例），就能生成配置。 nagios 預設全部用 `https` 訪問網頁。
+按照下面配置 `url.md`（已寫好範例），就能生成配置。 nagios 預設全部用 `https` 訪問網頁。
 
 ```
 # 區域a
@@ -130,4 +130,4 @@ $ ./gen-cfg
 
 ## 參考
 
-[wiki](https://zh.wikipedia.org/wiki/Nagios)
+[Wikipedia, Nagios, English](https://zh.wikipedia.org/wiki/Nagios)
