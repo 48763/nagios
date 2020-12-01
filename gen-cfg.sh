@@ -8,7 +8,7 @@ ENV=""
 ITEM=""
 HOST=""
 MEMBERS=""
-CFG_PATH=""
+CFG_PATH="${NAGIOS_PATH}/../nagios.cfg"
 mode=0
 
 set_cfg() {
@@ -120,9 +120,17 @@ if [ ! -d ${NAGIOS_PATH} ]; then
     exit 1
 fi
 
+if [ 0 -ne $(check_config "${NAGIOS_PATH}") ]; then
+    write_config "cfg_dir=/etc/nagios/project"
+fi
+
 if [ ! -d ${NAGIOS_PATH}/svc ]; then
     mkdir ${NAGIOS_PATH}/svc
 fi
+
+rm -f ${NAGIOS_PATH}/host.cfg
+rm -f ${NAGIOS_PATH}/svcgp.cfg
+rm -f ${NAGIOS_PATH}/svc/*.cfg
 
 while read output
 do
