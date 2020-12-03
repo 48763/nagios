@@ -108,7 +108,8 @@ main() {
 
             $sh_c "apt-get install -y gcc libc6 libmcrypt-dev libssl-dev gettext \
                 make autoconf build-essential gawk unzip bc dc iputils-ping \
-                apache2 snmp libnet-snmp-perl >/dev/null"
+                apache2 snmp libnet-snmp-perl \
+                libwww-perl libcrypt-ssleay-perl liblwp-protocol-https-perl >/dev/null"
 
             case "$dist_version" in
 
@@ -232,7 +233,9 @@ main() {
             case "$dist_version" in
 
                 5)
-                    yum install -y gcc glibc glibc-common make gettext automake openssl-devel net-snmp net-snmp-utils epel-release perl-Net-SNMP
+                    yum install -y gcc glibc glibc-common make gettext automake \
+                        openssl-devel net-snmp net-snmp-utils epel-release \
+                        perl-Net-SNMP perl-libwww-perl perl-Crypt-SSLeay perl-LWP-Protocol-https
 
                     cd /tmp
                     wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.60.tar.gz
