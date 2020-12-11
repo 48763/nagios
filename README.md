@@ -100,7 +100,14 @@ $ ./run.sh
 ## nothing-to-do
 ```
 
-> `####` 是提供給子專案使用，如果專案內沒再細分，可以忽略不使用。
+> - 名稱請使用 `-` 連接，不要用 ` `，如：`ab cd`，應該要 `ab-cd`。
+> - `####` 是提供給子專案使用，如果專案內沒再細分，可以忽略不使用。
+
+nagios 的名稱格式：
+- Host Group：`專案a`
+- Host：`專案a-環境-子專案`
+- Service Group：`專案a-環境`
+- Service：`HTTPS 專案a-環境-子專案 url`
 
 ### 路徑與區域配置
 
@@ -131,3 +138,4 @@ $ ./gen-cfg
 ## 參考
 
 [Wikipedia, Nagios, English](https://zh.wikipedia.org/wiki/Nagios)
+[Nagios, Integrating-Slack-With-Nagios-XI, English](https://assets.nagios.com/downloads/nagiosxi/docs/Integrating-Slack-With-Nagios-XI.pdf)
