@@ -32,8 +32,8 @@ set_ignore() {
 configure_host() {
     
     # some project not exist subproject.
-    if [ "${PROJECT}" = "${ITEM}" ]; then
-        HOST="${ENV}-${ITEM}"
+    if [ "" = "${ITEM}" ]; then
+        HOST="${ENV}-${PROJECT}"
     else
         HOST="${PROJECT}-${ENV}-${ITEM}"
     fi
@@ -172,7 +172,7 @@ do
             fi
 
             PROJECT=${output#* }
-            ITEM=${output#* }
+            ITEM=""
         fi
     fi
 
